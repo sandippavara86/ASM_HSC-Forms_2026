@@ -87,7 +87,7 @@ st.write("---")
 st.subheader("📝 फॉर्ममध्ये काही चूक आहे का?")
 st.info("जर तुमच्या नावात, विषयात, जन्मतारखेत किंवा इतर माहितीत काही चूक असेल, तर खालील लिंकवर क्लिक करून माहिती सबमिट करा. ही माहिती थेट सरांना मिळेल.")
 
-# येथे तुमच्या Google Form ची लिंक टाका
-https://forms.gle/hXDkhdJfPZjNCcwA7तुमची_गुगल_फॉर्म_लिंक_इथे_टाका"
+# खालीलप्रमाणे डबल कोटेशनच्या (" ") आतच तुमची लिंक असावी
+google_form_link = "https://forms.gle/hXDkhdJfPZjNCcwA7"
 
 st.markdown(f"[👉 येथे क्लिक करून तुमची चूक नोंदवा]({google_form_link})", unsafe_allow_html=True)
