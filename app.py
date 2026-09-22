@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import PyPDF2
+import fitz  # PyMuPDF (PDF चे फोटो करण्यासाठी)
 import io
 import os
 
@@ -35,7 +36,7 @@ if st.button("फॉर्म पहा", type="primary"):
         
         if not student.empty:
             student_name = student.iloc[0]['Student_Name']
-            st.success(f"✅ स्वागत आहे, **{student_name}**! तुमचा फॉर्म खाली उपलब्ध आहे.")
+            st.success(f"✅ स्वागत आहे, **{student_name}**! तुमचा फॉर्म खाली पाहण्यासाठी उपलब्ध आहे.")
             
             try:
                 pdf_path = "12th_Final_Smart_Merged_Document.pdf" 
@@ -43,6 +44,19 @@ if st.button("फॉर्म पहा", type="primary"):
                 page_start = student_index * 2
                 page_end = page_start + 1
                 
+                # --- PDF चे थेट स्क्रीनवर फोटो (Preview) दाखवणे ---
+                doc = fitz.open(pdf_path)
+                
+                st.markdown("### 📱 तुमचा फॉर्म खाली पहा:")
+                
+                for i, p_num in enumerate([page_start, page_end]):
+                    if p_num < len(doc):
+                        page = doc[p_num]
+                        pix = page.get_pixmap(dpi=150)  # उच्च दर्जाची क्लिarity
+                        img_bytes = pix.tobytes("png")
+                        st.image(img_bytes, caption=f"फॉर्म पान क्र. {i+1}", use_container_width=True)
+                
+                # --- डाउनलोडसाठी PDF तयार करणे ---
                 with open(pdf_path, "rb") as file:
                     reader = PyPDF2.PdfReader(file)
                     writer = PyPDF2.PdfWriter()
@@ -55,20 +69,17 @@ if st.button("फॉर्म पहा", type="primary"):
                     pdf_bytes = io.BytesIO()
                     writer.write(pdf_bytes)
                     pdf_bytes.seek(0)
-                    
-                    # --- थेट डाउनलोड बटण (प्रेव्ह्यू काढून टाकला आहे) ---
-                    st.success("✅ तुमचा फॉर्म पडताळणीसाठी तयार आहे!")
-                    
-                    pdf_bytes.seek(0)
-                    
-                    st.download_button(
-                        label="📥 माझा फॉर्म डाउनलोड करा",
-                        data=pdf_bytes,
-                        file_name=f"Board_Form_{form_no_input}.pdf",
-                        mime="application/pdf"
-                    )
+                
+                st.write("---")
+                # डाउनलोड बटण
+                st.download_button(
+                    label="📥 मला हा फॉर्म डाऊनलोड करायचा आहे",
+                    data=pdf_bytes,
+                    file_name=f"Board_Form_{form_no_input}.pdf",
+                    mime="application/pdf"
+                )
             except Exception as e:
-                st.error("PDF फाईल लोड करताना अडचण आली.")
+                st.error("फॉर्म लोड करताना अडचण आली.")
         else:
             st.error("❌ चुकीचा फॉर्म नंबर किंवा पासवर्ड. कृपया पुन्हा तपासा.")
     else:
