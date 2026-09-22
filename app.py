@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import PyPDF2
 import io
-import base64
 import os
 
 # पेज सेटिंग्ज
@@ -57,18 +56,11 @@ if st.button("फॉर्म पहा", type="primary"):
                     writer.write(pdf_bytes)
                     pdf_bytes.seek(0)
                     
-                    # --- 1. फॉर्म Preview दाखवणे ---
-                    st.markdown("### तुमचा फॉर्म खाली पहा:")
-                    base64_pdf = base64.b64encode(pdf_bytes.read()).decode('utf-8')
-                    pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="600" type="application/pdf"></iframe>'
-                    st.markdown(pdf_display, unsafe_allow_html=True)
+                    # --- थेट डाउनलोड बटण (प्रेव्ह्यू काढून टाकला आहे) ---
+                    st.success("✅ तुमचा फॉर्म पडताळणीसाठी तयार आहे!")
                     
-                    st.info("💡 सूचना: काही मोबाईलमध्ये वरील फॉर्म डायरेक्ट दिसत नाही. तसे झाल्यास खालील 'डाउनलोड करा' बटणाचा वापर करा.")
-                    
-                    # डाउनलोड करण्यासाठी फाईल पुन्हा सेट करणे
                     pdf_bytes.seek(0)
                     
-                    # --- 2. डाउनलोड बटण ---
                     st.download_button(
                         label="📥 माझा फॉर्म डाउनलोड करा",
                         data=pdf_bytes,
@@ -87,7 +79,6 @@ st.write("---")
 st.subheader("📝 फॉर्ममध्ये काही चूक आहे का?")
 st.info("जर तुमच्या नावात, विषयात, जन्मतारखेत किंवा इतर माहितीत काही चूक असेल, तर खालील लिंकवर क्लिक करून माहिती सबमिट करा. ही माहिती थेट सरांना मिळेल.")
 
-# खालीलप्रमाणे डबल कोटेशनच्या (" ") आतच तुमची लिंक असावी
 google_form_link = "https://forms.gle/hXDkhdJfPZjNCcwA7"
 
 st.markdown(f"[👉 येथे क्लिक करून तुमची चूक नोंदवा]({google_form_link})", unsafe_allow_html=True)
